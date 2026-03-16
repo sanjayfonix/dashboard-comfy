@@ -9,7 +9,7 @@ export default function APIAccessInfoCard() {
 
   const clientId = process.env.NEXT_PUBLIC_CLIENT_ID || 'your_client_id_here';
   const apiKey = process.env.NEXT_PUBLIC_API_KEY || 'your_api_key_here';
-  const maskedKey = apiKey.substring(0, 12) + '********************';
+  const maskedKey = apiKey.substring(0, 12) + '••••••••••••••••••••';
 
   const handleCopyKey = () => {
     navigator.clipboard.writeText(apiKey);

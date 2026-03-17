@@ -10,6 +10,7 @@ export async function generateStaticParams() {
   ];
 }
 
-export default function EditGarmentPage({ params }: { params: { id: string } }) {
-  return <EditGarmentView garmentId={params.id} />;
+export default async function EditGarmentPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  return <EditGarmentView garmentId={id} />;
 }

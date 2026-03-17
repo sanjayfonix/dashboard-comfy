@@ -3,15 +3,23 @@
 import { useState } from 'react';
 
 interface IntegrationSettingsSectionProps {
-  onGenerateApiToken: () => void;
-  onUpdateSecurity: () => void;
-  onEnableMaintenance: () => void;
+  onGenerateApiToken?: () => void;
+  onUpdateSecurity?: () => void;
+  onEnableMaintenance?: () => void;
+  clientId?: string;
+  apiKey?: string;
+  clientIdValue?: string;
+  webhookUrl?: string;
 }
 
 export default function IntegrationSettingsSection({ 
   onGenerateApiToken, 
   onUpdateSecurity,
-  onEnableMaintenance 
+  onEnableMaintenance,
+  clientId,
+  apiKey,
+  clientIdValue,
+  webhookUrl
 }: IntegrationSettingsSectionProps) {
   const [apiRateLimit, setApiRateLimit] = useState(1000);
   const [tokenExpiration, setTokenExpiration] = useState('30 days');
@@ -22,6 +30,10 @@ export default function IntegrationSettingsSection({
   const [emailHighFailureRate, setEmailHighFailureRate] = useState(true);
   const [infrastructureAlerts, setInfrastructureAlerts] = useState(true);
   const [maintenanceMode, setMaintenanceMode] = useState(false);
+  const noop = () => {};
+  const handleGenerateApiToken = onGenerateApiToken ?? noop;
+  const handleUpdateSecurity = onUpdateSecurity ?? noop;
+  const handleEnableMaintenance = onEnableMaintenance ?? noop;
 
   return (
     <>
@@ -34,12 +46,50 @@ export default function IntegrationSettingsSection({
             <label className="block text-sm font-medium text-[#111111] mb-2">Platform API Endpoint</label>
             <input
               type="text"
-              value="https://api.tryon-platform.com/v1"
+              value={clientId ? `https://api.tryon-platform.com/v1/clients/${clientId}` : 'https://api.tryon-platform.com/v1'}
               readOnly
               className="w-full px-4 py-2.5 bg-[#F8F8F8] border border-[#E5E5E5] rounded-xl text-sm text-[#6B7280] cursor-not-allowed"
             />
             <p className="text-xs text-[#9CA3AF] mt-1.5">Read-only API endpoint for platform integrations</p>
           </div>
+
+          {(apiKey || clientIdValue || webhookUrl) && (
+            <div className="grid grid-cols-1 gap-4">
+              {clientIdValue && (
+                <div>
+                  <label className="block text-sm font-medium text-[#111111] mb-2">Client Identifier</label>
+                  <input
+                    type="text"
+                    value={clientIdValue}
+                    readOnly
+                    className="w-full px-4 py-2.5 bg-[#F8F8F8] border border-[#E5E5E5] rounded-xl text-sm text-[#6B7280] cursor-not-allowed"
+                  />
+                </div>
+              )}
+              {apiKey && (
+                <div>
+                  <label className="block text-sm font-medium text-[#111111] mb-2">API Key</label>
+                  <input
+                    type="text"
+                    value={apiKey}
+                    readOnly
+                    className="w-full px-4 py-2.5 bg-[#F8F8F8] border border-[#E5E5E5] rounded-xl text-sm text-[#6B7280] cursor-not-allowed"
+                  />
+                </div>
+              )}
+              {webhookUrl && (
+                <div>
+                  <label className="block text-sm font-medium text-[#111111] mb-2">Webhook URL</label>
+                  <input
+                    type="text"
+                    value={webhookUrl}
+                    readOnly
+                    className="w-full px-4 py-2.5 bg-[#F8F8F8] border border-[#E5E5E5] rounded-xl text-sm text-[#6B7280] cursor-not-allowed"
+                  />
+                </div>
+              )}
+            </div>
+          )}
 
           <div>
             <label className="block text-sm font-medium text-[#111111] mb-2">API Rate Limit (requests/minute)</label>
@@ -73,7 +123,7 @@ export default function IntegrationSettingsSection({
 
           <div className="pt-2">
             <button
-              onClick={onGenerateApiToken}
+              onClick={handleGenerateApiToken}
               className="px-5 py-2.5 bg-black text-white rounded-full text-sm font-medium hover:bg-black/90 transition-all cursor-pointer whitespace-nowrap shadow-[0px_4px_12px_rgba(0,0,0,0.15)]"
             >
               <i className="ri-key-line mr-2 w-4 h-4 inline-flex items-center justify-center"></i>
@@ -130,7 +180,7 @@ export default function IntegrationSettingsSection({
 
           <div className="pt-2">
             <button
-              onClick={onUpdateSecurity}
+              onClick={handleUpdateSecurity}
               className="px-5 py-2.5 bg-black text-white rounded-full text-sm font-medium hover:bg-black/90 transition-all cursor-pointer whitespace-nowrap shadow-[0px_4px_12px_rgba(0,0,0,0.15)]"
             >
               <i className="ri-shield-check-line mr-2 w-4 h-4 inline-flex items-center justify-center"></i>
@@ -233,7 +283,7 @@ export default function IntegrationSettingsSection({
 
         <div className="pt-4">
           <button
-            onClick={onEnableMaintenance}
+            onClick={handleEnableMaintenance}
             disabled={maintenanceMode}
             className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all whitespace-nowrap shadow-[0px_4px_12px_rgba(0,0,0,0.15)] ${
               maintenanceMode 

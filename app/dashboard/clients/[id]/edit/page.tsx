@@ -17,6 +17,7 @@ export async function generateStaticParams() {
   ];
 }
 
-export default function EditClientPage({ params }: { params: { id: string } }) {
-  return <EditClientView clientId={params.id} />;
+export default async function EditClientPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  return <EditClientView clientId={id} />;
 }

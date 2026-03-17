@@ -2,11 +2,42 @@
 
 import { useState } from 'react';
 
-export default function PlatformConfigurationForm() {
-  const [maxConcurrentJobs, setMaxConcurrentJobs] = useState(50);
-  const [storageDuration, setStorageDuration] = useState('48 hours');
+interface PlatformConfigurationFormProps {
+  formData?: any;
+  errors?: Record<string, string>;
+  updateFormData?: (field: string, value: any) => void;
+  isLoading?: boolean;
+}
+
+export default function PlatformConfigurationForm({
+  formData,
+  errors = {},
+  updateFormData,
+  isLoading = false
+}: PlatformConfigurationFormProps) {
+  const [localMaxConcurrentJobs, setLocalMaxConcurrentJobs] = useState(50);
+  const [localStorageDuration, setLocalStorageDuration] = useState('48 hours');
   const [maxImageSize, setMaxImageSize] = useState(10);
   const [jobTimeout, setJobTimeout] = useState(300);
+
+  const maxConcurrentJobs = formData?.maxConcurrentJobs ?? localMaxConcurrentJobs;
+  const storageDuration = formData?.storageDuration ?? localStorageDuration;
+
+  const onMaxConcurrentJobsChange = (value: number) => {
+    if (updateFormData) {
+      updateFormData('maxConcurrentJobs', value);
+      return;
+    }
+    setLocalMaxConcurrentJobs(value);
+  };
+
+  const onStorageDurationChange = (value: string) => {
+    if (updateFormData) {
+      updateFormData('storageDuration', value);
+      return;
+    }
+    setLocalStorageDuration(value);
+  };
 
   return (
     <div className="bg-white rounded-2xl p-6 shadow-[0px_6px_20px_rgba(0,0,0,0.05)] border border-[#E5E5E5]">
@@ -19,9 +50,13 @@ export default function PlatformConfigurationForm() {
           <input
             type="number"
             value={maxConcurrentJobs}
-            onChange={(e) => setMaxConcurrentJobs(Number(e.target.value))}
+            onChange={(e) => onMaxConcurrentJobsChange(Number(e.target.value))}
+            disabled={isLoading}
             className="w-full px-4 py-2.5 bg-[#F8F8F8] border border-[#E5E5E5] rounded-xl text-sm text-[#111111] focus:outline-none focus:ring-2 focus:ring-black/10 focus:border-black/20 transition-all"
           />
+          {errors.maxConcurrentJobs && (
+            <p className="text-xs text-[#6B7280] mt-1.5">{errors.maxConcurrentJobs}</p>
+          )}
           <p className="text-xs text-[#9CA3AF] mt-1.5">Maximum number of jobs that can be processed simultaneously</p>
         </div>
 
@@ -30,7 +65,8 @@ export default function PlatformConfigurationForm() {
           <div className="relative">
             <select
               value={storageDuration}
-              onChange={(e) => setStorageDuration(e.target.value)}
+              onChange={(e) => onStorageDurationChange(e.target.value)}
+              disabled={isLoading}
               className="w-full px-4 py-2.5 pr-8 bg-[#F8F8F8] border border-[#E5E5E5] rounded-xl text-sm text-[#111111] focus:outline-none focus:ring-2 focus:ring-black/10 focus:border-black/20 transition-all appearance-none cursor-pointer"
             >
               <option>24 hours</option>
@@ -50,6 +86,7 @@ export default function PlatformConfigurationForm() {
             type="number"
             value={maxImageSize}
             onChange={(e) => setMaxImageSize(Number(e.target.value))}
+            disabled={isLoading}
             className="w-full px-4 py-2.5 bg-[#F8F8F8] border border-[#E5E5E5] rounded-xl text-sm text-[#111111] focus:outline-none focus:ring-2 focus:ring-black/10 focus:border-black/20 transition-all"
           />
           <p className="text-xs text-[#9CA3AF] mt-1.5">Maximum file size allowed for user photo uploads</p>
@@ -61,6 +98,7 @@ export default function PlatformConfigurationForm() {
             type="number"
             value={jobTimeout}
             onChange={(e) => setJobTimeout(Number(e.target.value))}
+            disabled={isLoading}
             className="w-full px-4 py-2.5 bg-[#F8F8F8] border border-[#E5E5E5] rounded-xl text-sm text-[#111111] focus:outline-none focus:ring-2 focus:ring-black/10 focus:border-black/20 transition-all"
           />
           <p className="text-xs text-[#9CA3AF] mt-1.5">Maximum time allowed for a single try-on job before timeout</p>

@@ -313,6 +313,7 @@ export default function EditClientView({ clientId }: { clientId: string }) {
     <div className="p-8">
       {showSuccess && (
         <SuccessBanner 
+          clientId={clientId}
           message="Client account successfully updated."
           linkText="Return to Client Details"
           linkHref={`/dashboard/clients/${clientId}`}

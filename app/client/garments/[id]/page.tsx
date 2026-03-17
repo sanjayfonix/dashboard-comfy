@@ -10,6 +10,7 @@ export async function generateStaticParams() {
   ];
 }
 
-export default function GarmentDetailPage({ params }: { params: { id: string } }) {
-  return <GarmentDetailView garmentId={params.id} />;
+export default async function GarmentDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  return <GarmentDetailView garmentId={id} />;
 }

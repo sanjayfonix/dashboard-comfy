@@ -23,6 +23,7 @@ export function generateStaticParams(): { id: string }[] {
   ];
 }
 
-export default function ClientDetailPage({ params }: { params: { id: string } }) {
-  return <ClientDetailView clientId={params.id} />;
+export default async function ClientDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  return <ClientDetailView clientId={id} />;
 }
